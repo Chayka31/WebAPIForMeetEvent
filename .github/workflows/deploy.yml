@@ -19,11 +19,12 @@ jobs:
         username: ${{ secrets.OMV_USER }}
         password: ${{ secrets.OMV_PASSWORD }}
         script: |
-          PROJECT_PATH="/srv/dev-disk-by-uuid-310ff77b-00b4-4054-80af-1595c90f666a/Data/webapi"
+          echo "🚀 Starting deployment"
+          echo "📁 Working directory: /srv/dev-disk-by-uuid-310ff77b-00b4-4054-80af-1595c90f666a/Data/webapi"
           
           # Создаем папку если нет
-          mkdir -p $PROJECT_PATH
-          cd $PROJECT_PATH
+          mkdir -p /srv/dev-disk-by-uuid-310ff77b-00b4-4054-80af-1595c90f666a/Data/webapi
+          cd /srv/dev-disk-by-uuid-310ff77b-00b4-4054-80af-1595c90f666a/Data/webapi
           
           # Клонируем или обновляем
           if [ ! -d ".git" ]; then
@@ -32,9 +33,9 @@ jobs:
             git pull origin main
           fi
           
-          # Пересобираем и запускаем API
+          # Запускаем Docker
           docker compose build webapi
           docker compose up -d webapi
-          
-          # Очистка
           docker image prune -f
+          
+          echo "✅ Deployment complete"
