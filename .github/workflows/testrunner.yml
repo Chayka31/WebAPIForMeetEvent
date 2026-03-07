@@ -1,0 +1,22 @@
+name: Test Runner
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:  # позволяет запускать вручную
+
+jobs:
+  test:
+    runs-on: self-hosted
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+      
+    - name: Show runner info
+      run: |
+        echo "🎉 Runner is working!"
+        echo "Hostname: $(hostname)"
+        echo "Current directory: $(pwd)"
+        echo "Who am I: $(whoami)"
+        echo "Date: $(date)"
