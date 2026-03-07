@@ -3,28 +3,43 @@ name: Deploy to OMV
 on:
   push:
     branches: [ main ]
+  workflow_dispatch:
 
 jobs:
   deploy:
-    runs-on: self-hosted  # Вместо ubuntu-latest
+    runs-on: self-hosted
     
     steps:
     - name: Checkout code
       uses: actions/checkout@v3
       
-    - name: Deploy to local folder
+    - name: Deploy to target directory
       run: |
-        # Теперь вы работаете прямо на OMV!
-        TARGET_PATH="/srv/dev-disk-by-uuid-310ff77b-00b4-4054-80af-1595c90f666a/Data/webapi"
+        TARGET="/srv/dev-disk-by-uuid-310ff77b-00b4-4054-80af-1595c90f666a/Data/webapi"
+        
+        echo "🚀 Deploying to $TARGET"
         
         # Создаем папку если нет
-        mkdir -p $TARGET_PATH
+        mkdir -p $TARGET
         
-        # Копируем файлы (локально!)
-        cp -r * $TARGET_PATH/
+        # Копируем файлы
+        cp -r * $TARGET/ 2>/dev/null || true
+        cp -r .github $TARGET/ 2>/dev/null || true
         
-        # Переходим и перезапускаем API
-        cd $TARGET_PATH
+        echo "✅ Files copied"
+        
+    - name: Build and restart API
+      run: |
+        cd /srv/dev-disk-by-uuid-310ff77b-00b4-4054-80af-1595c90f666a/Data/webapi
+        
+        echo "🔨 Building API..."
         docker compose build webapi
+        
+        echo "🚀 Restarting API..."
         docker compose up -d webapi
+        
+        echo "🧹 Cleaning up..."
         docker image prune -f
+        
+        echo "✅ Deployment complete!"
+        docker compose ps
