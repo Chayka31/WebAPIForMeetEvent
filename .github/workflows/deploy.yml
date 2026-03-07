@@ -12,20 +12,29 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v3
       
-    - name: Deploy to OMV via SSH
+    - name: Deploy to OMV
       uses: appleboy/ssh-action@v1.0.0
       with:
         host: ${{ secrets.OMV_HOST }}
         username: ${{ secrets.OMV_USER }}
         password: ${{ secrets.OMV_PASSWORD }}
         script: |
-          cd /home/andryha/meetevent
-          echo "📦 Pulling latest changes..."
-          git pull origin main
-          echo "🔨 Rebuilding and restarting API..."
+          PROJECT_PATH="/srv/dev-disk-by-uuid-310ff77b-00b4-4054-80af-1595c90f666a/Data/webapi"
+          
+          # Создаем папку если нет
+          mkdir -p $PROJECT_PATH
+          cd $PROJECT_PATH
+          
+          # Клонируем или обновляем
+          if [ ! -d ".git" ]; then
+            git clone https://github.com/${{ github.repository }}.git .
+          else
+            git pull origin main
+          fi
+          
+          # Пересобираем и запускаем API
           docker compose build webapi
           docker compose up -d webapi
-          echo "🧹 Cleaning up old images..."
+          
+          # Очистка
           docker image prune -f
-          echo "✅ Deployment complete!"
-          docker compose ps
