@@ -13,6 +13,8 @@ namespace WebAPI.Data
 
         }
 
+        //реп
+
         public DbSet<Account> Accounts { get; set; }
         public DbSet<Post> Posts { get; set; }
         public DbSet<Eventing> Events { get; set; }
