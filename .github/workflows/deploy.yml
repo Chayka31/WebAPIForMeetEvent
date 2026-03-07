@@ -1,0 +1,35 @@
+name: Deploy to OMV
+
+on:
+  push:
+    branches: [ main ]  # Срабатывает при пуше в main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+      
+    - name: Deploy to OMV via SSH
+      uses: appleboy/ssh-action@v1.0.0
+      with:
+        host: ${{ secrets.OMV_HOST }}
+        username: ${{ secrets.OMV_USER }}
+        password: ${{ secrets.OMV_PASSWORD }}
+        # или key: ${{ secrets.OMV_SSH_KEY }}
+        script: |
+          cd /home/user/meetevent
+          echo "📦 Pulling latest changes..."
+          git pull origin main
+          
+          echo "🔨 Rebuilding and restarting API..."
+          docker compose build webapi
+          docker compose up -d webapi
+          
+          echo "🧹 Cleaning up old images..."
+          docker image prune -f
+          
+          echo "✅ Deployment complete!"
+          docker compose ps
