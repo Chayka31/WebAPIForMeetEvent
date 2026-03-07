@@ -6,19 +6,25 @@ on:
 
 jobs:
   deploy:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted  # Вместо ubuntu-latest
     
     steps:
     - name: Checkout code
       uses: actions/checkout@v3
       
-    - name: Deploy via SCP (SSH)
-      uses: appleboy/scp-action@v0.1.7
-      with:
-        host: 192.168.100.5
-        username: root
-        password: 4cRcg12gfo
-        port: 22
-        source: "."
-        target: "/srv/dev-disk-by-uuid-310ff77b-00b4-4054-80af-1595c90f666a/Data/webapi"
-        strip_components: 0
+    - name: Deploy to local folder
+      run: |
+        # Теперь вы работаете прямо на OMV!
+        TARGET_PATH="/srv/dev-disk-by-uuid-310ff77b-00b4-4054-80af-1595c90f666a/Data/webapi"
+        
+        # Создаем папку если нет
+        mkdir -p $TARGET_PATH
+        
+        # Копируем файлы (локально!)
+        cp -r * $TARGET_PATH/
+        
+        # Переходим и перезапускаем API
+        cd $TARGET_PATH
+        docker compose build webapi
+        docker compose up -d webapi
+        docker image prune -f
