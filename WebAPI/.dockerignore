@@ -1,0 +1,48 @@
+﻿# .dockerignore
+# Игнорировать папки с зависимостями
+**/bin/
+**/obj/
+**/packages/
+**/node_modules/
+
+# Игнорировать файлы настроек IDE
+**/.vs/
+**/.vscode/
+**/.idea/
+**/*.user
+**/*.suo
+**/*.userprefs
+
+# Игнорировать файлы системы контроля версий
+**/.git/
+**/.gitignore
+**/.gitattributes
+**/.svn/
+
+# Игнорировать временные файлы
+**/*.log
+**/*.tmp
+**/*.temp
+**/TestResults/
+
+# Игнорировать файлы конфигурации для разработки
+**/appsettings.Development.json
+**/launchSettings.json
+
+# Игнорировать Docker файлы
+**/Dockerfile
+**/.dockerignore
+**/docker-compose*
+**/compose*
+
+# Игнорировать README и документацию
+**/README.md
+**/docs/
+
+# Игнорировать папки с тестами (если есть)
+**/Tests/
+**/*Tests/
+**/*Test/
+
+# Игнорировать папки с ресурсами (если не нужны)
+**/wwwroot/uploads/  # если у вас есть папка с загруженными файлами

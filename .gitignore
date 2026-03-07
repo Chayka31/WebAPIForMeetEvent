@@ -1,0 +1,34 @@
+# .gitignore
+## Игнорировать папки Visual Studio
+.vs/
+.vsconfig
+*.user
+*.userosscache
+*.suo
+*.userprefs
+
+## Игнорировать папки с бинарниками
+bin/
+obj/
+packages/
+**/bin/**
+**/obj/**
+
+## Игнорировать настройки IDE
+.vscode/
+.idea/
+
+## Игнорировать логи
+*.log
+*.tmp
+
+## Игнорировать файлы базы данных
+*.mdf
+*.ldf
+
+## Игнорировать Docker файлы (кроме docker-compose)
+docker-compose*.override.yml
+
+## Игнорировать appsettings с секретами
+appsettings.Production.json
+appsettings.Development.json
