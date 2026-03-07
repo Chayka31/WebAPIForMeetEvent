@@ -12,30 +12,13 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v3
       
-    - name: Deploy to OMV
-      uses: appleboy/ssh-action@v1.0.0
+    - name: Deploy via SCP (SSH)
+      uses: appleboy/scp-action@v0.1.7
       with:
-        host: ${{ secrets.OMV_HOST }}
-        username: ${{ secrets.OMV_USER }}
-        password: ${{ secrets.OMV_PASSWORD }}
-        script: |
-          echo "🚀 Starting deployment"
-          echo "📁 Working directory: /srv/dev-disk-by-uuid-310ff77b-00b4-4054-80af-1595c90f666a/Data/webapi"
-          
-          # Создаем папку если нет
-          mkdir -p /srv/dev-disk-by-uuid-310ff77b-00b4-4054-80af-1595c90f666a/Data/webapi
-          cd /srv/dev-disk-by-uuid-310ff77b-00b4-4054-80af-1595c90f666a/Data/webapi
-          
-          # Клонируем или обновляем
-          if [ ! -d ".git" ]; then
-            git clone https://github.com/${{ github.repository }}.git .
-          else
-            git pull origin main
-          fi
-          
-          # Запускаем Docker
-          docker compose build webapi
-          docker compose up -d webapi
-          docker image prune -f
-          
-          echo "✅ Deployment complete"
+        host: 192.168.100.5
+        username: root
+        password: 4cRcg12gfo
+        port: 22
+        source: "."
+        target: "/srv/dev-disk-by-uuid-310ff77b-00b4-4054-80af-1595c90f666a/Data/webapi"
+        strip_components: 0
