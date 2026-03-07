@@ -13,20 +13,41 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v3
       
-    - name: Deploy to target directory
+    - name: Show current directory
+      run: |
+        echo "📁 Current directory: $(pwd)"
+        echo "📂 Files in current directory:"
+        ls -la
+        
+    - name: Create target directory
+      run: |
+        TARGET="/srv/dev-disk-by-uuid-310ff77b-00b4-4054-80af-1595c90f666a/Data/webapi"
+        echo "🎯 Target directory: $TARGET"
+        
+        # Создаем папку если её нет
+        mkdir -p "$TARGET"
+        echo "✅ Target directory ready"
+        
+    - name: Copy files to target
       run: |
         TARGET="/srv/dev-disk-by-uuid-310ff77b-00b4-4054-80af-1595c90f666a/Data/webapi"
         
-        echo "🚀 Deploying to $TARGET"
+        echo "📋 Copying files to $TARGET"
         
-        # Создаем папку если нет
-        mkdir -p $TARGET
+        # Копируем все файлы (включая скрытые) в целевую папку
+        cp -rf . "$TARGET/"
         
-        # Копируем файлы
-        cp -r * $TARGET/ 2>/dev/null || true
-        cp -r .github $TARGET/ 2>/dev/null || true
+        echo "✅ Files copied successfully"
         
-        echo "✅ Files copied"
+    - name: Verify copied files
+      run: |
+        TARGET="/srv/dev-disk-by-uuid-310ff77b-00b4-4054-80af-1595c90f666a/Data/webapi"
+        
+        echo "📂 Files in target directory:"
+        ls -la "$TARGET"
+        
+        echo "📁 WebAPI directory:"
+        ls -la "$TARGET/WebAPI" || echo "WebAPI directory not found"
         
     - name: Build and restart API
       run: |
