@@ -17,7 +17,7 @@ namespace WebAPI.Models
         public byte[]? image { get; set; }
         public string? email { get; set; }
         public long? count_value { get; set; }
-        public long id_pol { get; set; }
+        public long? id_pol { get; set; }
         public DateTime? date_birth { get; set; }
 
     }
